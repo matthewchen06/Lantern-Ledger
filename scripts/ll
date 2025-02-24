@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -euo pipefail
+DB=${LL_DB:-$HOME/.lantern_ledger/ledger.csv}
+python3 - "$DB" "$@" << 'PY'
+import sys
+from pathlib import Path
+from datetime import datetime
+from lantern_ledger.ledger import Ledger, Entry
+
+if len(sys.argv) < 2:
+    print("usage: ll <db> <command> [args]", file=sys.stderr)
+    sys.exit(1)
+
+path = Path(sys.argv[1])
+if len(sys.argv) == 2:
+    print(f"DB at {path}")
+    sys.exit(0)
+
+cmd = sys.argv[2]
+ledger = Ledger(path)
+
+if cmd == "add":
+    # ll add YYYY-MM-DD category amount description...
+    if len(sys.argv) < 7:
+        print("usage: ll <db> add YYYY-MM-DD category amount description", file=sys.stderr)
+        sys.exit(2)
+    date = datetime.strptime(sys.argv[3], "%Y-%m-%d")
+    category = sys.argv[4]
+    amount = float(sys.argv[5])
+    description = " ".join(sys.argv[6:])
+    ledger.add(Entry(date=date, category=category, amount=amount, description=description))
+    print("added")
+elif cmd == "balance":
+    print(f"{ledger.balance():.2f}")
+else:
+    print(f"unknown command: {cmd}", file=sys.stderr)
+    sys.exit(3)
+PY

@@ -1,0 +1,12 @@
+.claude
+CLAUDE.md
+AGENTS.mdpytest
+.mypy_cache
+__pycache__
+.DS_Store
+.env
+venv
+.idea
+.vscode
+.cache
+python.env
