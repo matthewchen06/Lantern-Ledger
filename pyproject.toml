@@ -1,0 +1,8 @@
+[project]
+name = "lantern-ledger"
+version = "0.0.1"
+description = "Tiny CLI for personal finance tracking"
+requires-python = ">=3.9"
+
+[tool.ruff]
+line-length = 100
