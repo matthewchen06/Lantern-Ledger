@@ -1,0 +1,3 @@
+- adjust .gitignore order
+- add tests and example script
+- basic CLI wiring
