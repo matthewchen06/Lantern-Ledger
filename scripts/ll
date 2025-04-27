@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 DB=${LL_DB:-$HOME/.lantern_ledger/ledger.csv}
+# support LL_DEFAULT_CATEGORY to avoid repeating category for quick adds
 python3 - "$DB" "$@" << 'PY'
 import sys
+import os
 from pathlib import Path
 from datetime import datetime
 from lantern_ledger.ledger import Ledger, Entry
@@ -25,7 +27,7 @@ if cmd == "add":
         print("usage: ll <db> add YYYY-MM-DD category amount description", file=sys.stderr)
         sys.exit(2)
     date = datetime.strptime(sys.argv[3], "%Y-%m-%d")
-    category = sys.argv[4]
+    category = sys.argv[4] if sys.argv[4] != "-" else (os.getenv("LL_DEFAULT_CATEGORY") or "misc")
     amount = float(sys.argv[5])
     description = " ".join(sys.argv[6:])
     ledger.add(Entry(date=date, category=category, amount=amount, description=description))
